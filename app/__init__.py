@@ -6,7 +6,7 @@ def create_app():
     :return: A Flask object
     """
     app = Flask(__name__)
-
+    app.config.from_object('config.Base')
     from . import api
     api.init_app(app)
 
