@@ -1,5 +1,6 @@
 from http import HTTPStatus
 
+
 def test_health(client):
     """ Health endpoint test"""
     response = client.get('/health/')
