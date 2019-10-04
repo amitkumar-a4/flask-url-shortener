@@ -14,3 +14,5 @@ class Base:
     PROJECT_ROOT = os.path.abspath(os.path.dirname(__file__))
     DEBUG = os.getenv('DEBUG')
     TESTING = os.getenv('TESTING') or False
+    SQLALCHEMY_DATABASE_URI= os.getenv('SQLALCHEMY_DATABASE_URI') or 'sqlite:///' + os.path.join(PROJECT_ROOT, 'dev.db')
+    SQLALCHEMY_TRACK_MODIFICATIONS = False
