@@ -10,6 +10,7 @@ class User(db.Model):
     email = db.Column(db.String(120), unique=True, nullable=False)
     password_plaintext = db.Column(db.String(120), nullable=False)
     created_at = db.Column(db.DateTime, nullable=False, default=func.now())
+    urls = db.relationship('Url', backref='user', lazy=True)
 
     def __repr__(self):
         return f'<User {self.email}>'
