@@ -1,18 +1,14 @@
 from flask import Blueprint, abort, request, jsonify, make_response
-from ..users.model import User
-from .model import Url
+from http import HTTPStatus
 
-
+from app.users.model import User
+from app.short_urls.model import Url
+from app.short_urls.constants import SHORT_URL_CREATED
 # Declare the blueprint
 short_urls_bp = Blueprint('short_urls', __name__)
 
 
 # Register controller
-@short_urls_bp.route('/')
-def health():
-    return {'message': 'OK'}
-
-
 @short_urls_bp.route('/urls', methods=['POST'])
 def register_url():
     # Dummy email, will be provided by jwt
@@ -21,7 +17,7 @@ def register_url():
 
     current_user = User.get_by_email(email)
     if not current_user:
-        abort(400, 'account does not exist')
+        abort(HTTPStatus.BAD_REQUEST, 'account does not exist')
 
     # create short url
     new_short_url = Url(
@@ -31,8 +27,8 @@ def register_url():
     short_url = new_short_url.save()
 
     response_body = {
-            "message": "Short URL Created",
+            "message": SHORT_URL_CREATED,
             "data": short_url.to_dict()
         }
-    response = make_response(jsonify(response_body), 201)
+    response = make_response(jsonify(response_body), HTTPStatus.CREATED)
     return response
