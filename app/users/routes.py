@@ -1,7 +1,9 @@
 from flask import Blueprint, request, jsonify, make_response, abort
+from http import HTTPStatus
 
-from .. import db
-from .model import User
+from app import db
+from app.users.model import User
+from app.users.constants import ALREADY_REGISTERED, USER_AUTHENTICATED, USER_CREATED
 
 # Declare the blueprint
 users_bp = Blueprint('users', __name__)
@@ -16,15 +18,15 @@ def register():
     # Raise an HTTPException with a 400 if email is already registered
     is_registered = User.get_by_email(email)
     if is_registered:
-        abort(400, 'email already registered')
+        abort(HTTPStatus.BAD_REQUEST, ALREADY_REGISTERED)
 
     User(email, password).save()
 
     response_body = {
-            "message": "User Created",
+            "message": USER_CREATED,
             "data": {'email': email}
         }
-    response = make_response(jsonify(response_body), 201)
+    response = make_response(jsonify(response_body), HTTPStatus.CREATED)
 
     return response
 
@@ -37,14 +39,14 @@ def login():
     # Raise an HTTPException with a 400 if email is already registered
     current_user = User.get_by_email(email)
     if not current_user:
-        abort(400, 'account does not exist')
+        abort(HTTPStatus.BAD_REQUEST, 'account does not exist')
 
     verify = current_user.check_password(password)
 
     response_body = {
-            "message": "User Created",
+            "message": USER_AUTHENTICATED,
             "data": {'verified': verify}
         }
-    response = make_response(jsonify(response_body), 200)
+    response = make_response(jsonify(response_body), HTTPStatus.OK)
 
     return response
