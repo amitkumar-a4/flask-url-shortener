@@ -2,7 +2,7 @@ from http import HTTPStatus
 import json
 
 
-def test_registration(client):
+def test_short_url_creation(client):
     """ Urls endpoint test"""
     response = client.post(
             '/urls',

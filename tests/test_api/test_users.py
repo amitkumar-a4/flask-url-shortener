@@ -1,7 +1,8 @@
 from http import HTTPStatus
 import json
+import pytest
 
-
+@pytest.mark.run(order=1)
 def test_registration(client):
     """ Users endpoint test"""
     response = client.post(
