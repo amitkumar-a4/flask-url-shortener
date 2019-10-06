@@ -30,4 +30,6 @@ def register_blueprints(app: Flask):
 def register_extensions(app: Flask):
     from flask_migrate import Migrate
     db.init_app(app)
-    Migrate(app, db)
+    with app.app_context():
+        db.create_all()
+        db.session.commit()
