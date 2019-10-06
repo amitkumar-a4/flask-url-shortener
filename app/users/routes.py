@@ -1,6 +1,6 @@
 from flask import Blueprint, request, jsonify, make_response, abort
 from http import HTTPStatus
-
+from flask_jwt_extended import create_access_token
 from app import db
 from app.users.model import User
 from app.users.constants import ALREADY_REGISTERED, USER_AUTHENTICATED, USER_CREATED
@@ -20,11 +20,15 @@ def register():
     if is_registered:
         abort(HTTPStatus.BAD_REQUEST, ALREADY_REGISTERED)
 
-    User(email, password).save()
+    new_user = User(email, password).save()
+    access_token = create_access_token(identity=new_user.email)
 
     response_body = {
-            "message": USER_CREATED,
-            "data": {'email': email}
+            'message': USER_CREATED,
+            'data': {
+                'email': new_user.email,
+                'access_token': access_token
+            }
         }
     response = make_response(jsonify(response_body), HTTPStatus.CREATED)
 
@@ -42,10 +46,10 @@ def login():
         abort(HTTPStatus.BAD_REQUEST, 'account does not exist')
 
     verify = current_user.check_password(password)
-
+    access_token = create_access_token(identity=current_user.email)
     response_body = {
             "message": USER_AUTHENTICATED,
-            "data": {'verified': verify}
+            "data": {'access_token': access_token}
         }
     response = make_response(jsonify(response_body), HTTPStatus.OK)
 

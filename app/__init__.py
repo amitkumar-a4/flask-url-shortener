@@ -1,5 +1,7 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
+from flask_jwt_extended import JWTManager
+
 db = SQLAlchemy()
 
 
@@ -28,7 +30,7 @@ def register_blueprints(app: Flask):
 
 
 def register_extensions(app: Flask):
-    from flask_migrate import Migrate
+    JWTManager(app)
     db.init_app(app)
     with app.app_context():
         db.create_all()
