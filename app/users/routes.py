@@ -3,7 +3,8 @@ from http import HTTPStatus
 from flask_jwt_extended import create_access_token
 from app import db
 from app.users.model import User
-from app.users.constants import ALREADY_REGISTERED, USER_AUTHENTICATED, USER_CREATED
+from app.users.constants import (
+    ALREADY_REGISTERED, USER_AUTHENTICATED, USER_CREATED)
 
 # Declare the blueprint
 users_bp = Blueprint('users', __name__)
