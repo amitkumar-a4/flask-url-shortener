@@ -1,9 +1,11 @@
-from flask import Blueprint, request, jsonify, make_response, abort
+from flask import Blueprint, request, jsonify, abort
 from http import HTTPStatus
 from flask_jwt_extended import create_access_token
+
 from app import db
 from app.users.model import User
 from app.utils.validators import validate_json, validate_schema
+from app.utils.helpers import create_response
 from app.users.schema import UserSchema
 from app.users.constants import (
     ALREADY_REGISTERED, USER_AUTHENTICATED, USER_CREATED)
@@ -14,6 +16,7 @@ users_bp = Blueprint('users', __name__)
 
 # Register controller
 @users_bp.route('/users', methods=['POST'])
+# validators
 @validate_json
 @validate_schema(UserSchema)
 def register():
@@ -28,15 +31,10 @@ def register():
     new_user = User(email, password).save()
     access_token = create_access_token(identity=new_user.email)
 
-    response_body = {
-            'message': USER_CREATED,
-            'data': {
+    response = create_response({
                 'email': new_user.email,
                 'access_token': access_token
-            }
-        }
-    response = make_response(jsonify(response_body), HTTPStatus.CREATED)
-
+            }, USER_CREATED, HTTPStatus.CREATED)
     return response
 
 
@@ -54,10 +52,9 @@ def login():
 
     verify = current_user.check_password(password)
     access_token = create_access_token(identity=current_user.email)
-    response_body = {
-            "message": USER_AUTHENTICATED,
-            "data": {'access_token': access_token}
-        }
-    response = make_response(jsonify(response_body), HTTPStatus.OK)
+
+    response = create_response({
+        'access_token': access_token},
+        USER_AUTHENTICATED, HTTPStatus.OK)
 
     return response

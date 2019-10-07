@@ -1,15 +1,14 @@
-from flask import Blueprint, json
+from flask import Blueprint, json, Response
 from werkzeug.exceptions import HTTPException
 
 errors = Blueprint('errors', __name__)
 
 
 @errors.app_errorhandler(HTTPException)
-def handle_exception(error):
-    """Return JSON instead of HTML for HTTP errors."""
-    # start with the correct headers and status code from the error
+def handle_exception(error) -> Response:
+    """ Return JSON instead of HTML for HTTP errors. """
     response = error.get_response()
-    # replace the body with JSON
+    # format the response
     response.data = json.dumps({
         "code": error.code,
         "error": error.name,
