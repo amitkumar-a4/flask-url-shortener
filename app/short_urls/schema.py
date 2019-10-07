@@ -7,4 +7,4 @@ class UrlSchema(Schema):
     Parameters:
      - url (str)
     """
-    url = fields.Str(required=True)
+    url = fields.Url(required=True)
