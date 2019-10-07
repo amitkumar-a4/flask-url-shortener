@@ -3,6 +3,8 @@ from http import HTTPStatus
 from flask_jwt_extended import create_access_token
 from app import db
 from app.users.model import User
+from app.utils.validators import validate_json, validate_schema
+from app.users.schema import UserSchema
 from app.users.constants import (
     ALREADY_REGISTERED, USER_AUTHENTICATED, USER_CREATED)
 
@@ -12,6 +14,8 @@ users_bp = Blueprint('users', __name__)
 
 # Register controller
 @users_bp.route('/users', methods=['POST'])
+@validate_json
+@validate_schema(UserSchema)
 def register():
     email = request.json.get('email')
     password = request.json.get('password')
@@ -37,6 +41,8 @@ def register():
 
 
 @users_bp.route('/users/login', methods=['POST'])
+@validate_json
+@validate_schema(UserSchema)
 def login():
     email = request.json.get('email')
     password = request.json.get('password')
