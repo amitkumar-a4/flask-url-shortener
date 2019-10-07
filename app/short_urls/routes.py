@@ -2,9 +2,11 @@ from flask import Blueprint, abort, request, jsonify, make_response, redirect
 from http import HTTPStatus
 from flask_jwt_extended import jwt_required, get_jwt_identity
 
+from app.utils.validators import validate_json, validate_schema
 from app.users.model import User
 from app.short_urls.model import Url
 from app.short_urls.constants import SHORT_URL_CREATED
+from app.short_urls.schema import UrlSchema
 
 # Declare the blueprint
 short_urls_bp = Blueprint('short_urls', __name__)
@@ -13,6 +15,8 @@ short_urls_bp = Blueprint('short_urls', __name__)
 # Register controller
 @short_urls_bp.route('/urls', methods=['POST'])
 @jwt_required
+@validate_json
+@validate_schema(UrlSchema)
 def register_url():
     url = request.json.get('url')
     current_user = User.get_by_email(get_jwt_identity())
