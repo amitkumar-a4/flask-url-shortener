@@ -8,7 +8,7 @@ from app.utils.validators import validate_json, validate_schema
 from app.utils.helpers import create_response
 from app.users.schema import UserSchema
 from app.users.constants import (
-    ALREADY_REGISTERED, USER_AUTHENTICATED, USER_CREATED)
+    ALREADY_REGISTERED, USER_AUTHENTICATED, USER_CREATED, INVALID)
 
 # Declare the blueprint
 users_bp = Blueprint('users', __name__)
@@ -48,9 +48,11 @@ def login():
     # Raise an HTTPException with a 400 if email is already registered
     current_user = User.get_by_email(email)
     if not current_user:
-        abort(HTTPStatus.BAD_REQUEST, 'account does not exist')
-
-    verify = current_user.check_password(password)
+        abort(HTTPStatus.BAD_REQUEST, INVALID)
+    try:
+        verify = current_user.check_password(password)
+    except:
+        abort(HTTPStatus.BAD_REQUEST, INVALID)
     access_token = create_access_token(identity=current_user.email)
 
     response = create_response({
