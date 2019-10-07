@@ -5,7 +5,7 @@ from app.users.model import User
 
 
 def test_get_by_email(client):
-    """Get user by ID."""
+    """ Get user by email ."""
     user = User('foo@bar.com', 'foo')
     user.save()
 
@@ -14,7 +14,7 @@ def test_get_by_email(client):
 
 
 def test_created_at_defaults_to_datetime(client):
-    """Test creation date."""
+    """ Test creation date. """
     user = User(email='baz@bar.com', password='bar')
     user.save()
     assert bool(user.created_at)
@@ -22,20 +22,20 @@ def test_created_at_defaults_to_datetime(client):
 
 
 def test_password_is_not_nullable(client):
-    """test that exception is raised if password is not set"""
+    """ test that exception is raised if password is not set """
     with pytest.raises(TypeError):
         assert User(email='foo@bar.com')
 
 
 def test_check_password(client):
-    """Check password."""
+    """ Test password validation """
     user = User(email='test@bar.com', password='foobarbaz123')
     user.save()
     assert user.check_password('foobarbaz123')
 
 
 def test_check_password_is_hashed(client):
-    """Check password hash."""
+    """Test password is hashed."""
     user = User(email='test@foobar.com', password='foobarbaz123')
     user.save()
     assert user.password[0:7] == '$argon2'

@@ -6,13 +6,13 @@ from app.short_urls.model import Url
 
 
 def test_check_random_int_generator(client):
-    """Check rand_int"""
+    """ Test random id generator """
     rand_int = Url.create_id()
     assert rand_int > 10000
 
 
 def test_get_by_short_url(client):
-    """Get url by short url."""
+    """ Get url by short url. """
     user = User('url_test@test.com', 'foo')
     user.save()
     new_short_url = Url(

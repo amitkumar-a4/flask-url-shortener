@@ -11,14 +11,14 @@ class ShortURL:
 
     _base = len(_alphabet)
 
-    def encode(self, number):
+    def encode(self, number: int) -> str:
         string = ''
         while(number > 0):
             string = self._alphabet[number % self._base] + string
             number //= self._base
         return string
 
-    def decode(self, string):
+    def decode(self, string: str) -> str:
         number = 0
         for char in string:
             number = number * self._base + self._alphabet.index(char)
