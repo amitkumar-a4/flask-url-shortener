@@ -1,5 +1,6 @@
 from flask import Blueprint, abort, request, jsonify, make_response, redirect
 from http import HTTPStatus
+from flask_jwt_extended import jwt_required, get_jwt_identity
 
 from app.users.model import User
 from app.short_urls.model import Url
@@ -11,12 +12,10 @@ short_urls_bp = Blueprint('short_urls', __name__)
 
 # Register controller
 @short_urls_bp.route('/urls', methods=['POST'])
+@jwt_required
 def register_url():
-    # Dummy email, will be provided by jwt
-    email = request.json.get('email')
     url = request.json.get('url')
-
-    current_user = User.get_by_email(email)
+    current_user = User.get_by_email(get_jwt_identity())
     if not current_user:
         abort(HTTPStatus.BAD_REQUEST, 'account does not exist')
 
