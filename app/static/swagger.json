@@ -1,0 +1,242 @@
+{
+	"openapi": "3.0.1",
+	"info": {
+		"description": "URL shortener API specification",
+		"version": "1.0.0",
+		"title": "URL shortener",
+		"contact": {
+			"email": "palafox.ernesto@gmail.com"
+		},
+		"license": {
+			"name": "MIT",
+			"url": "https://opensource.org/licenses/MIT"
+		}
+	},
+	"servers": [{
+		"url": "/"
+	}],
+	"host": "basic-auth-server.herokuapp.com",
+
+	"schemes": [
+		"http",
+		"https"
+	],
+
+	"tags": [{
+			"name": "Users",
+			"description": "User registration and login"
+		},
+		{
+			"name": "Urls",
+			"description": "Urls shortener related"
+		}
+	],
+	"paths": {
+		"/users": {
+			"post": {
+				"tags": [
+					"Users"
+				],
+				"summary": "Create a new user",
+				"requestBody": {
+					"description": "Create a new user",
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/createUserPostBody"
+							}
+						}
+					}
+				},
+				"produces": [
+					"application/json"
+				],
+				"responses": {
+					"201": {
+						"description": "OK",
+						"schema": {
+							"$ref": "#/components/schemas/createUserResponse"
+						}
+					},
+					"400": {
+						"description": "email already registered"
+					}
+				}
+			}
+		},
+		"/users/login": {
+			"post": {
+				"tags": [
+					"Users"
+				],
+				"summary": "Login user",
+				"requestBody": {
+					"description": "Login user",
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/loginUserPostBody"
+							}
+						}
+					}
+				},
+				"produces": [
+					"application/json"
+				],
+				"responses": {
+					"201": {
+						"description": "OK",
+						"schema": {
+							"$ref": "#/components/schemas/loginUserResponse"
+						}
+					},
+					"400": {
+						"description": "invalid email or password"
+					}
+				}
+			}
+		},
+		"/urls": {
+			"post": {
+				"tags": [
+					"Urls"
+				],
+				"summary": "Shorten a url",
+				"requestBody": {
+					"description": "Shorten a url",
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/shortenUrlPostBody"
+							}
+						}
+					}
+				},
+				"produces": [
+					"application/json"
+				],
+				"responses": {
+					"201": {
+						"description": "OK",
+						"schema": {
+							"$ref": "#/components/schemas/shortenUrlResponse"
+						}
+					},
+					"400": {
+						"description": "email already registered"
+					}
+				},
+				"security": [{
+					"bearerAuth": []
+				}]
+			}
+		}
+	},
+	"components": {
+		"schemas": {
+			"createUserResponse": {
+				"type": "object",
+				"properties": {
+					"data": {
+						"type": "object",
+						"properties": {
+							"access_token": {
+								"type": "string",
+								"format": "string"
+							},
+							"email": {
+								"type": "string",
+								"format": "email"
+							}
+						}
+					},
+					"message": {
+						"type": "string",
+						"format": "string"
+					}
+				}
+			},
+			"createUserPostBody": {
+				"type": "object",
+				"properties": {
+					"email": {
+						"type": "string",
+						"format": "email"
+					},
+					"password": {
+						"type": "string",
+						"format": "string"
+					}
+				}
+			},
+			"loginUserResponse": {
+				"type": "object",
+				"properties": {
+					"data": {
+						"type": "object",
+						"properties": {
+							"access_token": {
+								"type": "string",
+								"format": "string"
+							}
+						}
+					},
+					"message": {
+						"type": "string",
+						"format": "string"
+					}
+				}
+			},
+			"loginUserPostBody": {
+				"type": "object",
+				"properties": {
+					"email": {
+						"type": "string",
+						"format": "email"
+					},
+					"password": {
+						"type": "string",
+						"format": "string"
+					}
+				}
+			},
+			"shortenUrlPostBody": {
+				"type": "object",
+				"properties": {
+					"url": {
+						"type": "string",
+						"format": "string"
+					}
+				}
+			},
+			"shortenUrlResponse": {
+				"type": "object",
+				"properties": {
+					"data": {
+						"type": "object",
+						"properties": {
+							"short_url": {
+								"type": "string",
+								"format": "string"
+							}
+						}
+					},
+					"message": {
+						"type": "string",
+						"format": "string"
+					}
+				}
+			}
+		},
+		"securitySchemes": {
+			"bearerAuth": {
+				"type": "http",
+				"scheme": "bearer",
+				"bearerFormat": "JWT"
+			}
+		}
+	}
+}

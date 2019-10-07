@@ -19,14 +19,17 @@ def create_app():
 
 def register_blueprints(app: Flask):
     """ Register blueprints """
-    from .short_urls.routes import short_urls_bp
-    from .health.routes import health_bp
-    from .users.routes import users_bp
-    from .utils.error_handler import errors
+    from app.short_urls.routes import short_urls_bp
+    from app.health.routes import health_bp
+    from app.users.routes import users_bp
+    from app.utils.error_handler import errors
+    from app.utils.swagger import swagger_blueprint, swagger_url
+
     app.register_blueprint(errors)
     app.register_blueprint(short_urls_bp)
     app.register_blueprint(health_bp)
     app.register_blueprint(users_bp)
+    app.register_blueprint(swagger_blueprint, url_prefix=swagger_url)
 
 
 def register_extensions(app: Flask):
