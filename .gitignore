@@ -42,3 +42,5 @@ target/
 .venv
 
 .env.prod
+
+zappa_settings.json
