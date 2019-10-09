@@ -1,0 +1,12 @@
+{
+    "dev": {
+        "app_function": "zappa_init.app",
+        "aws_region": "<CHOOSE REGION>",
+        "profile_name": "default",
+        "project_name": "url-shortener",
+        "runtime": "python3.7",
+        "s3_bucket": "<YOUR_S3_BUCKET>",
+        "slim_handler": true,
+        "cors": true
+    }
+}

@@ -2,6 +2,7 @@ from flask import Blueprint, abort, request, jsonify, make_response, redirect
 from http import HTTPStatus
 from flask_jwt_extended import jwt_required, get_jwt_identity
 
+from app import logging
 from app.utils.validators import validate_json, validate_schema
 from app.users.model import User
 from app.short_urls.model import Url
@@ -20,6 +21,7 @@ short_urls_bp = Blueprint('short_urls', __name__)
 @validate_json
 @validate_schema(UrlSchema)
 def register_url():
+    logging.info('Processing shorten request')
     url = request.json.get('url')
     current_user = User.get_by_email(get_jwt_identity())
     if not current_user:
@@ -41,7 +43,7 @@ def register_url():
 
 @short_urls_bp.route('/<short_url>', methods=['GET'])
 def redirect_to_long_url(short_url):
-
+    logging.info('Processing get long url request')
     url = Url.get_by_short_url(short_url)
     if not url:
         abort(HTTPStatus.NOT_FOUND, URL_DONT_EXIST)
