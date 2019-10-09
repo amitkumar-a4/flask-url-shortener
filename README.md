@@ -4,13 +4,19 @@
 
 A URL Shortener is a service that creates short **aliases for URLs**. It generates a short code for a URL and then redirects the user to the URL when that code is accessed. One example of such service is [bitly](https://bitly.com/).
 
+TLDR; test it out! [serverless-url-shortener](https://compassionate-ptolemy-c108c5.netlify.com/login)
 
-# Solution
+# What was built?
+
+## About this app
+This app is a flask based project. It implements flask as a factory and make use of blueprints. SqlAlchemy ORM, dotenv, JWT for auth, argon2 for password hashing,  and pytest for test suite. It implements a simple logger and a custom error validator and schema validator Marshmallow for schema validation. 
+
+## Simple frontend
+Frontend for the project is in this repo [frontend](https://github.com/palafoxernesto/url-shortener-frontend)
 
 ## System requirements
 
  - Functional:
-   
    - Given a URL, the system will generete a unique short alias(short URL)
    - If we enter to the short URL, we will be redirected to the original URL
    - A simple user interface
@@ -25,8 +31,7 @@ A URL Shortener is a service that creates short **aliases for URLs**. It generat
    - Use GIT
    - Clean and reliable code
  
-## About this app
-This app is a flask based project. It implements flask as a factory and make use of blueprints. SqlAlchemy ORM, dotenv, JWT for auth, argon2 for password hashing,  and pytest for test suite. It implements a simple logger and a custom error validator and schema validator Marshmallow for schema validation. 
+
 
 ## Project structure
 
@@ -83,7 +88,7 @@ The project will serve swagger-ui @ /swagger (not working on lambda deployment :
 
 ### IDEA 1
 
-Ok, we need a unique id for each URL. What if we use a standard algorithm to hash the given URL string? Lets say we choose crc-32. It will generate a 32 bit hash value.
+Ok, we need a unique id for each URL. What if we use a standard algorithm to hash the given URL string? Let's say we choose crc-32. It will generate a 32 bit hash value.
 ```
 >>> import zlib
 >>> zlib.crc32(b'http://www.thelongestdomainnameintheworldandthensomeandthensomemoreandmore.com')
@@ -101,12 +106,12 @@ But... what about collitions?
 As stated here [wiki generalization] "the expected number of N-bit hashes that can be generated before getting a collision is not 2^N, but rather only 2​^N⁄2".
 
 Hence, for our crc32 algorithm we can expect our first collition at: 2^(32/2) = 256
-Wait, what???
+Wait... what?
 
 Hash function approach Drawbacks:
 
 - Early collisions
-- Insertion can became costly. We will need to hit db to ensure the id doesn't exist, if it exist, we will generate another random id until id is unique.
+- Insertion can became costly. We will need to hit the db to ensure the id doesn't exist, if it exist, we will generate another random id until id is unique.
 
 Workarounds:
 
@@ -114,7 +119,6 @@ Workarounds:
 
 Or maybe there is a simple and better way?
 Let's start again.
-
   
 
 ### IDEA 2
@@ -180,11 +184,11 @@ Auto-incremental id approach drawbacks:
 
 ##  Decision:
 
-Even if it is a common problem nowadays, there are plenty of ways to solve it. IMO, there is no perfect solution. Of course there can be a lot of improvements and workarounds in all of the approaches mentioned.
+There are plenty of ways to solve it. IMO, there is no perfect solution. Of course there can be a lot of improvements and workarounds in all of the approaches mentioned.
 
 I am sure it's good to think about scaling issues, and think of a distributed system at the beginning. Maybe using tools like Zookeper, or Redis for manage auto-increments. Thinking about caching for a better performance. Purging the DB data. Randomizing the alphabet on base62 encoding... But for this exercise it seems to me like an overkill.
 
-At this moment I will choose approach #2. IMO, it will perform better than the #3rd approach, i better SELECT + INSERT something on a DB than INSERT + UPDATE.
+At this moment I will choose idea #2. IMO, it will perform better than the #idea 3, i better SELECT + INSERT something on a DB than INSERT + UPDATE.
 
 As we will use base62, and we don't have a strict constrain on url length it will generate more than 56 billion urls of length up to 6. If we hit that limit, we can continue generating larger urls. For urls of length 7 we can have more than 3 trillion (62^7) unique urls.
 
