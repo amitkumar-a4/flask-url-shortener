@@ -9,7 +9,7 @@ class Url(db.Model):
     """ This class represents the urls table."""
     __tablename__ = 'urls'
     id = db.Column(db.Integer, primary_key=True)
-    short_id = db.Column(db.Integer, unique=True)
+    short_id = db.Column(db.BigInteger, unique=True)
     long_url = db.Column(db.Text, unique=False)
     created_at = db.Column(db.DateTime, nullable=False, default=func.now())
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
