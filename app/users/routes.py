@@ -2,7 +2,7 @@ from flask import Blueprint, request, jsonify, abort
 from http import HTTPStatus
 from flask_jwt_extended import create_access_token
 
-from app import db
+from app import db, logging
 from app.users.model import User
 from app.utils.validators import validate_json, validate_schema
 from app.utils.helpers import create_response
@@ -20,6 +20,7 @@ users_bp = Blueprint('users', __name__)
 @validate_json
 @validate_schema(UserSchema)
 def register():
+    logging.info('Processing register request')
     email = request.json.get('email')
     password = request.json.get('password')
 
@@ -42,6 +43,7 @@ def register():
 @validate_json
 @validate_schema(UserSchema)
 def login():
+    logging.info('Processing login request')
     email = request.json.get('email')
     password = request.json.get('password')
 

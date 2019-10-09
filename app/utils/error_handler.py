@@ -1,5 +1,6 @@
 from flask import Blueprint, json, Response
 from werkzeug.exceptions import HTTPException
+from app import logging
 
 errors = Blueprint('errors', __name__)
 
@@ -14,5 +15,6 @@ def handle_exception(error) -> Response:
         "error": error.name,
         "message": error.description,
     })
+    logging.error(error)
     response.content_type = "application/json"
     return response

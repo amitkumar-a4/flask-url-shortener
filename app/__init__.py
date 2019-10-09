@@ -1,8 +1,15 @@
+import logging
+
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_jwt_extended import JWTManager
+from flask_cors import CORS
 
 db = SQLAlchemy()
+logging.basicConfig(
+        level=logging.DEBUG,
+        format=('%(asctime)s %(levelname)s %(name)s'
+                '%(threadName)s : %(message)s'))
 
 
 def create_app():
@@ -33,6 +40,7 @@ def register_blueprints(app: Flask):
 
 
 def register_extensions(app: Flask):
+    CORS(app)
     JWTManager(app)
     db.init_app(app)
     with app.app_context():
